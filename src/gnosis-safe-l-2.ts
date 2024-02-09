@@ -1,3 +1,5 @@
+import { Bytes } from '@graphprotocol/graph-ts'
+
 import {
   AddedOwner as AddedOwnerEvent,
   ApproveHash as ApproveHashEvent,
@@ -15,8 +17,8 @@ import {
   SafeMultiSigTransaction as SafeMultiSigTransactionEvent,
   SafeReceived as SafeReceivedEvent,
   SafeSetup as SafeSetupEvent,
-  SignMsg as SignMsgEvent
-} from "../generated/GnosisSafeL2/GnosisSafeL2"
+  SignMsg as SignMsgEvent,
+} from '../generated/GnosisSafeL2/GnosisSafeL2'
 import {
   AddedOwner,
   ApproveHash,
@@ -34,12 +36,12 @@ import {
   SafeMultiSigTransaction,
   SafeReceived,
   SafeSetup,
-  SignMsg
-} from "../generated/schema"
+  SignMsg,
+} from '../generated/schema'
 
 export function handleAddedOwner(event: AddedOwnerEvent): void {
   let entity = new AddedOwner(
-    event.transaction.hash.concatI32(event.logIndex.toI32())
+    event.transaction.hash.concatI32(event.logIndex.toI32()),
   )
   entity.owner = event.params.owner
 
@@ -52,7 +54,7 @@ export function handleAddedOwner(event: AddedOwnerEvent): void {
 
 export function handleApproveHash(event: ApproveHashEvent): void {
   let entity = new ApproveHash(
-    event.transaction.hash.concatI32(event.logIndex.toI32())
+    event.transaction.hash.concatI32(event.logIndex.toI32()),
   )
   entity.approvedHash = event.params.approvedHash
   entity.owner = event.params.owner
@@ -65,10 +67,10 @@ export function handleApproveHash(event: ApproveHashEvent): void {
 }
 
 export function handleChangedFallbackHandler(
-  event: ChangedFallbackHandlerEvent
+  event: ChangedFallbackHandlerEvent,
 ): void {
   let entity = new ChangedFallbackHandler(
-    event.transaction.hash.concatI32(event.logIndex.toI32())
+    event.transaction.hash.concatI32(event.logIndex.toI32()),
   )
   entity.handler = event.params.handler
 
@@ -81,7 +83,7 @@ export function handleChangedFallbackHandler(
 
 export function handleChangedGuard(event: ChangedGuardEvent): void {
   let entity = new ChangedGuard(
-    event.transaction.hash.concatI32(event.logIndex.toI32())
+    event.transaction.hash.concatI32(event.logIndex.toI32()),
   )
   entity.guard = event.params.guard
 
@@ -94,7 +96,7 @@ export function handleChangedGuard(event: ChangedGuardEvent): void {
 
 export function handleChangedThreshold(event: ChangedThresholdEvent): void {
   let entity = new ChangedThreshold(
-    event.transaction.hash.concatI32(event.logIndex.toI32())
+    event.transaction.hash.concatI32(event.logIndex.toI32()),
   )
   entity.threshold = event.params.threshold
 
@@ -107,7 +109,7 @@ export function handleChangedThreshold(event: ChangedThresholdEvent): void {
 
 export function handleDisabledModule(event: DisabledModuleEvent): void {
   let entity = new DisabledModule(
-    event.transaction.hash.concatI32(event.logIndex.toI32())
+    event.transaction.hash.concatI32(event.logIndex.toI32()),
   )
   entity.module = event.params.module
 
@@ -120,7 +122,7 @@ export function handleDisabledModule(event: DisabledModuleEvent): void {
 
 export function handleEnabledModule(event: EnabledModuleEvent): void {
   let entity = new EnabledModule(
-    event.transaction.hash.concatI32(event.logIndex.toI32())
+    event.transaction.hash.concatI32(event.logIndex.toI32()),
   )
   entity.module = event.params.module
 
@@ -133,7 +135,7 @@ export function handleEnabledModule(event: EnabledModuleEvent): void {
 
 export function handleExecutionFailure(event: ExecutionFailureEvent): void {
   let entity = new ExecutionFailure(
-    event.transaction.hash.concatI32(event.logIndex.toI32())
+    event.transaction.hash.concatI32(event.logIndex.toI32()),
   )
   entity.txHash = event.params.txHash
   entity.payment = event.params.payment
@@ -146,10 +148,10 @@ export function handleExecutionFailure(event: ExecutionFailureEvent): void {
 }
 
 export function handleExecutionFromModuleFailure(
-  event: ExecutionFromModuleFailureEvent
+  event: ExecutionFromModuleFailureEvent,
 ): void {
   let entity = new ExecutionFromModuleFailure(
-    event.transaction.hash.concatI32(event.logIndex.toI32())
+    event.transaction.hash.concatI32(event.logIndex.toI32()),
   )
   entity.module = event.params.module
 
@@ -161,10 +163,10 @@ export function handleExecutionFromModuleFailure(
 }
 
 export function handleExecutionFromModuleSuccess(
-  event: ExecutionFromModuleSuccessEvent
+  event: ExecutionFromModuleSuccessEvent,
 ): void {
   let entity = new ExecutionFromModuleSuccess(
-    event.transaction.hash.concatI32(event.logIndex.toI32())
+    event.transaction.hash.concatI32(event.logIndex.toI32()),
   )
   entity.module = event.params.module
 
@@ -177,7 +179,7 @@ export function handleExecutionFromModuleSuccess(
 
 export function handleExecutionSuccess(event: ExecutionSuccessEvent): void {
   let entity = new ExecutionSuccess(
-    event.transaction.hash.concatI32(event.logIndex.toI32())
+    event.transaction.hash.concatI32(event.logIndex.toI32()),
   )
   entity.txHash = event.params.txHash
   entity.payment = event.params.payment
@@ -191,7 +193,7 @@ export function handleExecutionSuccess(event: ExecutionSuccessEvent): void {
 
 export function handleRemovedOwner(event: RemovedOwnerEvent): void {
   let entity = new RemovedOwner(
-    event.transaction.hash.concatI32(event.logIndex.toI32())
+    event.transaction.hash.concatI32(event.logIndex.toI32()),
   )
   entity.owner = event.params.owner
 
@@ -203,10 +205,10 @@ export function handleRemovedOwner(event: RemovedOwnerEvent): void {
 }
 
 export function handleSafeModuleTransaction(
-  event: SafeModuleTransactionEvent
+  event: SafeModuleTransactionEvent,
 ): void {
   let entity = new SafeModuleTransaction(
-    event.transaction.hash.concatI32(event.logIndex.toI32())
+    event.transaction.hash.concatI32(event.logIndex.toI32()),
   )
   entity.module = event.params.module
   entity.to = event.params.to
@@ -222,10 +224,10 @@ export function handleSafeModuleTransaction(
 }
 
 export function handleSafeMultiSigTransaction(
-  event: SafeMultiSigTransactionEvent
+  event: SafeMultiSigTransactionEvent,
 ): void {
   let entity = new SafeMultiSigTransaction(
-    event.transaction.hash.concatI32(event.logIndex.toI32())
+    event.transaction.hash.concatI32(event.logIndex.toI32()),
   )
   entity.to = event.params.to
   entity.value = event.params.value
@@ -248,7 +250,7 @@ export function handleSafeMultiSigTransaction(
 
 export function handleSafeReceived(event: SafeReceivedEvent): void {
   let entity = new SafeReceived(
-    event.transaction.hash.concatI32(event.logIndex.toI32())
+    event.transaction.hash.concatI32(event.logIndex.toI32()),
   )
   entity.sender = event.params.sender
   entity.value = event.params.value
@@ -261,25 +263,35 @@ export function handleSafeReceived(event: SafeReceivedEvent): void {
 }
 
 export function handleSafeSetup(event: SafeSetupEvent): void {
-  let entity = new SafeSetup(
-    event.transaction.hash.concatI32(event.logIndex.toI32())
+  let id = event.transaction.hash.toHex().concat(event.logIndex.toString())
+  let entity = new SafeSetup(Bytes.fromHexString('0x' + id) as Bytes)
+
+  entity.initiator = Bytes.fromHexString(
+    event.params.initiator.toHex(),
+  ) as Bytes
+  entity.owners = event.params.owners.map<Bytes>(
+    (owner) => Bytes.fromHexString(owner.toHex()) as Bytes,
   )
-  entity.initiator = event.params.initiator
-  entity.owners = event.params.owners
   entity.threshold = event.params.threshold
-  entity.initializer = event.params.initializer
-  entity.fallbackHandler = event.params.fallbackHandler
+  entity.initializer = Bytes.fromHexString(
+    event.params.initializer.toHex(),
+  ) as Bytes
+  entity.fallbackHandler = Bytes.fromHexString(
+    event.params.fallbackHandler.toHex(),
+  ) as Bytes
 
   entity.blockNumber = event.block.number
   entity.blockTimestamp = event.block.timestamp
-  entity.transactionHash = event.transaction.hash
+  entity.transactionHash = Bytes.fromHexString(
+    event.transaction.hash.toHex(),
+  ) as Bytes
 
   entity.save()
 }
 
 export function handleSignMsg(event: SignMsgEvent): void {
   let entity = new SignMsg(
-    event.transaction.hash.concatI32(event.logIndex.toI32())
+    event.transaction.hash.concatI32(event.logIndex.toI32()),
   )
   entity.msgHash = event.params.msgHash
 

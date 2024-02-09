@@ -6,7 +6,7 @@ dataSources:
     name: GnosisSafeL2
     network: gnosis
     source:
-      address: "0x3e5c63644e683549055b9be8653de26e0b4cd36e"
+      address: '0xa195ff03cefe2a3a437e8926990932d700bf7585'
       abi: GnosisSafeL2
       startBlock: 16236936
     mapping:
