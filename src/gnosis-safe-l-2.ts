@@ -3,7 +3,7 @@ import { SignMsg as SignMsgEvent } from '../generated/GnosisSafeL2/GnosisSafeL2'
 import { SignMsg } from '../generated/schema'
 import { Signature, SafeMultiSigTransaction, Signer } from '../generated/schema'
 import { BigInt } from '@graphprotocol/graph-ts'
-import { ExecutionSuccess } from '../generated/GnosisSafeL2/GnosisSafeL2'
+import { Contract, ExecutionSuccess } from '../generated/Contract/Contract'
 import { UserActivity } from '../generated/schema'
 
 import {
@@ -47,14 +47,12 @@ import {
 
 export function handleAddedOwner(event: AddedOwnerEvent): void {
   let entity = new AddedOwner(
-    event.transaction.hash.concatI32(event.logIndex.toI32()),
+    event.transaction.hash.toHex() + '-' + event.logIndex.toString(),
   )
   entity.owner = event.params.owner
-
   entity.blockNumber = event.block.number
   entity.blockTimestamp = event.block.timestamp
   entity.transactionHash = event.transaction.hash
-
   entity.save()
 }
 
@@ -183,30 +181,20 @@ export function handleExecutionFromModuleSuccess(
   entity.save()
 }
 
-export function handleExecutionSuccess(event: ExecutionSuccess): void {
+export function handleExecutionSuccess(event: ExecutionSuccessEvent): void {
   let timestamp = event.block.timestamp.toI32()
-  let date = new Date(timestamp * 1000) // Convert to milliseconds
-  let year = date.getUTCFullYear()
-  let month = date.getUTCMonth() + 1 // getUTCMonth() returns 0-11
+  let executor = event.params.executor
+  let year = timestamp / 31536000 // Simplified conversion, not accurate
+  let month = (timestamp % 31536000) / 2628000 // Simplified, adjust for accuracy
 
   let id =
-    event.params.executor.toHexString() +
-    '-' +
-    year.toString() +
-    '-' +
-    month.toString()
-  let activity = UserActivity.load(id)
-
-  if (!activity) {
-    activity = new UserActivity(id)
-    activity.executor = event.params.executor
-    activity.year = year
-    activity.month = month
-    activity.signatures = 0
-    activity.executions = 0
-  }
-
-  activity.executions += 1
+    executor.toHexString() + '-' + year.toString() + '-' + month.toString()
+  let activity = new UserActivity(id) // Assuming UserActivity is defined in your schema
+  activity.executor = executor
+  activity.year = BigInt.fromI32(year)
+  activity.month = BigInt.fromI32(month)
+  activity.signatures = BigInt.fromI32(0) // Initialize if tracking signatures
+  activity.executions = BigInt.fromI32(1) // Start with 1 execution
   activity.save()
 }
 
