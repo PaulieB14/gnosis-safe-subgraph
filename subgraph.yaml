@@ -31,6 +31,9 @@ dataSources:
         - SafeReceived
         - SafeSetup
         - SignMsg
+        - Signature
+        - MonthlySignatureCount
+        - Signer
       abis:
         - name: GnosisSafeL2
           file: ./abis/GnosisSafeL2.json
@@ -69,4 +72,6 @@ dataSources:
           handler: handleSafeSetup
         - event: SignMsg(indexed bytes32)
           handler: handleSignMsg
+        - event: SignatureAdded(bytes32,bytes)
+          handler: handleSignatureAdded
       file: ./src/gnosis-safe-l-2.ts

@@ -1,6 +1,8 @@
 import { Bytes } from '@graphprotocol/graph-ts'
 import { SignMsg as SignMsgEvent } from '../generated/GnosisSafeL2/GnosisSafeL2'
 import { SignMsg } from '../generated/schema'
+import { SignatureAdded } from '../generated/GnosisSafe/GnosisSafe'
+import { Signature, SafeMultiSigTransaction, Signer } from '../generated/schema'
 
 import {
   AddedOwner as AddedOwnerEvent,
@@ -302,4 +304,25 @@ export function handleSignMsg(event: SignMsgEvent): void {
   entity.transactionHash = event.transaction.hash
 
   entity.save()
+}
+
+export function handleSignatureAdded(event: SignatureAdded): void {
+  let id = event.params.signatureId.toHex()
+  let signature = new Signature(id)
+  signature.transaction = event.params.transactionId.toHex()
+  signature.signer = event.params.signer
+  signature.signatureData = event.params.signatureData
+  // Additional logic to update related entities
+  signature.save()
+
+  // Update signer entity
+  let signer = Signer.load(event.params.signer.toHex())
+  if (!signer) {
+    signer = new Signer(event.params.signer.toHex())
+    // Initialize fields
+  }
+  // Update fields based on the new signature
+  signer.save()
+
+  // Logic to update monthly aggregates...
 }
