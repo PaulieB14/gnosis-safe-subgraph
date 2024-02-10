@@ -304,11 +304,3 @@ export function handleSignMsg(event: SignMsgEvent): void {
 
   entity.save()
 }
-
-export function handleSignatureAdded(event: SignatureAdded): void {
-  let signature = new Signature(event.params.signatureId.toHex())
-  signature.transaction = event.params.transactionId.toHex()
-  signature.signer = event.params.signer
-  signature.signatureData = event.params.signatureData
-  signature.save()
-}
