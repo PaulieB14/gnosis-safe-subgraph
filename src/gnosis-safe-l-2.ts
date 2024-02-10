@@ -292,22 +292,16 @@ export function handleSafeSetup(event: SafeSetupEvent): void {
 }
 
 export function handleSignMsg(event: SignMsgEvent): void {
-  // Use the transaction hash directly as the entity ID
+  // Directly use the transaction hash as the entity ID without converting it to a hex string
   let entity = new SignMsg(event.transaction.hash.toHex())
 
-  // Assign msgHash directly if it's already a Bytes type
-  // If you need to convert from a string, use Bytes.fromHexString() with proper hex string
   entity.msgHash = event.params.msgHash
-
-  // Assuming event.transaction.from is of type Address and needs to be converted to Bytes
-  // The .toHexString() method ensures the "0x" prefix is included
-  entity.signer = Bytes.fromHexString(event.transaction.from.toHexString())
+  // For the signer, assuming you're trying to convert an Ethereum address to Bytes
+  // Use the .toHexString() method on the Address type, and then convert it to Bytes
+  entity.signer = Bytes.fromHexString(event.transaction.from.toHex())
 
   entity.blockNumber = event.block.number
   entity.blockTimestamp = event.block.timestamp
-
-  // Directly use the transaction hash for transactionHash if it's already a Bytes type
   entity.transactionHash = event.transaction.hash
-
   entity.save()
 }
