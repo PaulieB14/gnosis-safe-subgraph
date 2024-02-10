@@ -174,7 +174,4 @@ type MonthlySignatureCount @entity {
 
 type Signer @entity {
   id: ID! # Address of the signer
-  signedTransactions: [SafeMultiSigTransaction!] @derivedFrom(field: "signer")
-  monthlySignatureCounts: [MonthlySignatureCount!]
-    @derivedFrom(field: "signers")
 }
