@@ -159,7 +159,7 @@ type SignMsg @entity {
 
 type Signature @entity {
   id: ID!
-  transaction: SafeMultiSigTransaction! @derivedFrom(field: "signatures")
+  transaction: SafeMultiSigTransaction! # Direct link without @derivedFrom
   signer: Bytes! # Address of the signer
   signatureData: Bytes! # The actual signature
 }
