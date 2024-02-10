@@ -1,5 +1,5 @@
 import { Bytes } from '@graphprotocol/graph-ts'
-import { SignMsg as SignMsgEvent } from '../generated/Contract/Contract'
+import { SignMsg as SignMsgEvent } from '../generated/GnosisSafeL2/GnosisSafeL2'
 import { SignMsg } from '../generated/schema'
 
 import {
