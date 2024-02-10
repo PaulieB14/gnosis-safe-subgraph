@@ -2,6 +2,9 @@ import { Bytes } from '@graphprotocol/graph-ts'
 import { SignMsg as SignMsgEvent } from '../generated/GnosisSafeL2/GnosisSafeL2'
 import { SignMsg } from '../generated/schema'
 import { Signature, SafeMultiSigTransaction, Signer } from '../generated/schema'
+import { BigInt } from '@graphprotocol/graph-ts'
+import { ExecutionSuccess } from '../generated/GnosisSafeL2/GnosisSafeL2'
+import { UserActivity } from '../generated/schema'
 
 import {
   AddedOwner as AddedOwnerEvent,
@@ -180,20 +183,25 @@ export function handleExecutionFromModuleSuccess(
   entity.save()
 }
 
-export function handleExecutionSuccess(event: ExecutionSuccessEvent): void {
+export function handleExecutionSuccess(event: ExecutionSuccess): void {
+  let timestamp = event.block.timestamp.toI32()
+  let date = new Date(timestamp * 1000) // Convert to milliseconds
+  let year = date.getUTCFullYear()
+  let month = date.getUTCMonth() + 1 // getUTCMonth() returns 0-11
+
   let id =
-    event.params.user.toHexString() +
+    event.params.executor.toHexString() +
     '-' +
-    event.block.timestamp.year().toString() +
+    year.toString() +
     '-' +
-    event.block.timestamp.month().toString()
+    month.toString()
   let activity = UserActivity.load(id)
 
   if (!activity) {
     activity = new UserActivity(id)
-    activity.user = event.params.user
-    activity.year = event.block.timestamp.year()
-    activity.month = event.block.timestamp.month()
+    activity.executor = event.params.executor
+    activity.year = year
+    activity.month = month
     activity.signatures = 0
     activity.executions = 0
   }

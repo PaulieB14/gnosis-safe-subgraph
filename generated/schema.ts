@@ -2172,3 +2172,110 @@ export class Signer extends Entity {
     this.set("id", Value.fromString(value));
   }
 }
+
+export class UserActivity extends Entity {
+  constructor(id: string) {
+    super();
+    this.set("id", Value.fromString(id));
+  }
+
+  save(): void {
+    let id = this.get("id");
+    assert(id != null, "Cannot save UserActivity entity without an ID");
+    if (id) {
+      assert(
+        id.kind == ValueKind.STRING,
+        `Entities of type UserActivity must have an ID of type String but the id '${id.displayData()}' is of type ${id.displayKind()}`
+      );
+      store.set("UserActivity", id.toString(), this);
+    }
+  }
+
+  static loadInBlock(id: string): UserActivity | null {
+    return changetype<UserActivity | null>(
+      store.get_in_block("UserActivity", id)
+    );
+  }
+
+  static load(id: string): UserActivity | null {
+    return changetype<UserActivity | null>(store.get("UserActivity", id));
+  }
+
+  get id(): string {
+    let value = this.get("id");
+    if (!value || value.kind == ValueKind.NULL) {
+      throw new Error("Cannot return null for a required field.");
+    } else {
+      return value.toString();
+    }
+  }
+
+  set id(value: string) {
+    this.set("id", Value.fromString(value));
+  }
+
+  get user(): Bytes {
+    let value = this.get("user");
+    if (!value || value.kind == ValueKind.NULL) {
+      throw new Error("Cannot return null for a required field.");
+    } else {
+      return value.toBytes();
+    }
+  }
+
+  set user(value: Bytes) {
+    this.set("user", Value.fromBytes(value));
+  }
+
+  get month(): i32 {
+    let value = this.get("month");
+    if (!value || value.kind == ValueKind.NULL) {
+      return 0;
+    } else {
+      return value.toI32();
+    }
+  }
+
+  set month(value: i32) {
+    this.set("month", Value.fromI32(value));
+  }
+
+  get year(): i32 {
+    let value = this.get("year");
+    if (!value || value.kind == ValueKind.NULL) {
+      return 0;
+    } else {
+      return value.toI32();
+    }
+  }
+
+  set year(value: i32) {
+    this.set("year", Value.fromI32(value));
+  }
+
+  get signatures(): i32 {
+    let value = this.get("signatures");
+    if (!value || value.kind == ValueKind.NULL) {
+      return 0;
+    } else {
+      return value.toI32();
+    }
+  }
+
+  set signatures(value: i32) {
+    this.set("signatures", Value.fromI32(value));
+  }
+
+  get executions(): i32 {
+    let value = this.get("executions");
+    if (!value || value.kind == ValueKind.NULL) {
+      return 0;
+    } else {
+      return value.toI32();
+    }
+  }
+
+  set executions(value: i32) {
+    this.set("executions", Value.fromI32(value));
+  }
+}
