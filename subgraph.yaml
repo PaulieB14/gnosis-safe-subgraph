@@ -72,6 +72,4 @@ dataSources:
           handler: handleSafeSetup
         - event: SignMsg(indexed bytes32)
           handler: handleSignMsg
-        - event: SignatureAdded(bytes32,bytes)
-          handler: handleSignatureAdded
       file: ./src/gnosis-safe-l-2.ts
