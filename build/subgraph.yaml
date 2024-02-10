@@ -8,7 +8,7 @@ dataSources:
     source:
       address: "0xa195ff03cefe2a3a437e8926990932d700bf7585"
       abi: GnosisSafeL2
-      startBlock: 16236936
+      startBlock: 28027081
     mapping:
       kind: ethereum/events
       apiVersion: 0.0.7

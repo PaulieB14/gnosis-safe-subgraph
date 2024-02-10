@@ -263,7 +263,7 @@ export function handleSafeReceived(event: SafeReceivedEvent): void {
 }
 
 export function handleSafeSetup(event: SafeSetupEvent): void {
-  let id = event.transaction.hash.toHex().concat(event.logIndex.toString())
+  let id = event.transaction.hash.toHex() + '-' + event.logIndex.toString()
   let entity = new SafeSetup(Bytes.fromHexString('0x' + id) as Bytes)
 
   entity.initiator = Bytes.fromHexString(
