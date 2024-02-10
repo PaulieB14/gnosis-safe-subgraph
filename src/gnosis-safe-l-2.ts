@@ -307,22 +307,9 @@ export function handleSignMsg(event: SignMsgEvent): void {
 }
 
 export function handleSignatureAdded(event: SignatureAdded): void {
-  let id = event.params.signatureId.toHex()
-  let signature = new Signature(id)
+  let signature = new Signature(event.params.signatureId.toHex())
   signature.transaction = event.params.transactionId.toHex()
   signature.signer = event.params.signer
   signature.signatureData = event.params.signatureData
-  // Additional logic to update related entities
   signature.save()
-
-  // Update signer entity
-  let signer = Signer.load(event.params.signer.toHex())
-  if (!signer) {
-    signer = new Signer(event.params.signer.toHex())
-    // Initialize fields
-  }
-  // Update fields based on the new signature
-  signer.save()
-
-  // Logic to update monthly aggregates...
 }
