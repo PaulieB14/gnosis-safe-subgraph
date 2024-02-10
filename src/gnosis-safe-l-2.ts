@@ -1,4 +1,6 @@
 import { Bytes } from '@graphprotocol/graph-ts'
+import { SignMsg as SignMsgEvent } from '../generated/Contract/Contract'
+import { SignMsg } from '../generated/schema'
 
 import {
   AddedOwner as AddedOwnerEvent,
@@ -290,14 +292,11 @@ export function handleSafeSetup(event: SafeSetupEvent): void {
 }
 
 export function handleSignMsg(event: SignMsgEvent): void {
-  let entity = new SignMsg(
-    event.transaction.hash.concatI32(event.logIndex.toI32()),
-  )
+  let entity = new SignMsg(event.transaction.hash.toHex())
   entity.msgHash = event.params.msgHash
-
+  entity.signer = event.transaction.from // Example of assigning the signer's address
   entity.blockNumber = event.block.number
   entity.blockTimestamp = event.block.timestamp
   entity.transactionHash = event.transaction.hash
-
   entity.save()
 }

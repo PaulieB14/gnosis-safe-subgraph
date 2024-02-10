@@ -148,9 +148,10 @@ type SafeSetup @entity(immutable: true) {
   transactionHash: Bytes!
 }
 
-type SignMsg @entity(immutable: true) {
+type SignMsg @entity {
   id: Bytes!
   msgHash: Bytes! # bytes32
+  signer: Bytes! # Address of the signer, added to track who signed the message
   blockNumber: BigInt!
   blockTimestamp: BigInt!
   transactionHash: Bytes!
