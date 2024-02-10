@@ -175,3 +175,12 @@ type MonthlySignatureCount @entity {
 type Signer @entity {
   id: ID! # Address of the signer
 }
+
+type UserActivity @entity {
+  id: ID!
+  user: Bytes! # Ethereum address of the user
+  month: Int!
+  year: Int!
+  signatures: Int! # Number of signatures this month
+  executions: Int! # Number of executions this month
+}

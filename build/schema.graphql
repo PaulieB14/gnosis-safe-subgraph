@@ -156,3 +156,22 @@ type SignMsg @entity {
   blockTimestamp: BigInt!
   transactionHash: Bytes!
 }
+
+type Signature @entity {
+  id: ID!
+  transaction: SafeMultiSigTransaction! # Direct link without @derivedFrom
+  signer: Bytes! # Address of the signer
+  signatureData: Bytes! # The actual signature
+}
+
+type MonthlySignatureCount @entity {
+  id: ID!
+  month: Int!
+  year: Int!
+  count: Int!
+  signers: [Bytes!]! # Addresses of signers who contributed to this count
+}
+
+type Signer @entity {
+  id: ID! # Address of the signer
+}

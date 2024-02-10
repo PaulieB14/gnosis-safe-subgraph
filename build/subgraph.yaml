@@ -31,6 +31,9 @@ dataSources:
         - SafeReceived
         - SafeSetup
         - SignMsg
+        - Signature
+        - MonthlySignatureCount
+        - Signer
       abis:
         - name: GnosisSafeL2
           file: GnosisSafeL2/abis/GnosisSafeL2.json

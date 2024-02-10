@@ -181,17 +181,25 @@ export function handleExecutionFromModuleSuccess(
 }
 
 export function handleExecutionSuccess(event: ExecutionSuccessEvent): void {
-  let entity = new ExecutionSuccess(
-    event.transaction.hash.concatI32(event.logIndex.toI32()),
-  )
-  entity.txHash = event.params.txHash
-  entity.payment = event.params.payment
+  let id =
+    event.params.user.toHexString() +
+    '-' +
+    event.block.timestamp.year().toString() +
+    '-' +
+    event.block.timestamp.month().toString()
+  let activity = UserActivity.load(id)
 
-  entity.blockNumber = event.block.number
-  entity.blockTimestamp = event.block.timestamp
-  entity.transactionHash = event.transaction.hash
+  if (!activity) {
+    activity = new UserActivity(id)
+    activity.user = event.params.user
+    activity.year = event.block.timestamp.year()
+    activity.month = event.block.timestamp.month()
+    activity.signatures = 0
+    activity.executions = 0
+  }
 
-  entity.save()
+  activity.executions += 1
+  activity.save()
 }
 
 export function handleRemovedOwner(event: RemovedOwnerEvent): void {
