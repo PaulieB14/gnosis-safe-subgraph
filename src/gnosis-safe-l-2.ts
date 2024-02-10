@@ -1,7 +1,6 @@
 import { Bytes } from '@graphprotocol/graph-ts'
 import { SignMsg as SignMsgEvent } from '../generated/GnosisSafeL2/GnosisSafeL2'
 import { SignMsg } from '../generated/schema'
-import { SignatureAdded } from '../generated/GnosisSafe/GnosisSafe'
 import { Signature, SafeMultiSigTransaction, Signer } from '../generated/schema'
 
 import {

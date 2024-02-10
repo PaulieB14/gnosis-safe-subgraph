@@ -1954,3 +1954,221 @@ export class SignMsg extends Entity {
     this.set("transactionHash", Value.fromBytes(value));
   }
 }
+
+export class Signature extends Entity {
+  constructor(id: string) {
+    super();
+    this.set("id", Value.fromString(id));
+  }
+
+  save(): void {
+    let id = this.get("id");
+    assert(id != null, "Cannot save Signature entity without an ID");
+    if (id) {
+      assert(
+        id.kind == ValueKind.STRING,
+        `Entities of type Signature must have an ID of type String but the id '${id.displayData()}' is of type ${id.displayKind()}`
+      );
+      store.set("Signature", id.toString(), this);
+    }
+  }
+
+  static loadInBlock(id: string): Signature | null {
+    return changetype<Signature | null>(store.get_in_block("Signature", id));
+  }
+
+  static load(id: string): Signature | null {
+    return changetype<Signature | null>(store.get("Signature", id));
+  }
+
+  get id(): string {
+    let value = this.get("id");
+    if (!value || value.kind == ValueKind.NULL) {
+      throw new Error("Cannot return null for a required field.");
+    } else {
+      return value.toString();
+    }
+  }
+
+  set id(value: string) {
+    this.set("id", Value.fromString(value));
+  }
+
+  get transaction(): Bytes {
+    let value = this.get("transaction");
+    if (!value || value.kind == ValueKind.NULL) {
+      throw new Error("Cannot return null for a required field.");
+    } else {
+      return value.toBytes();
+    }
+  }
+
+  set transaction(value: Bytes) {
+    this.set("transaction", Value.fromBytes(value));
+  }
+
+  get signer(): Bytes {
+    let value = this.get("signer");
+    if (!value || value.kind == ValueKind.NULL) {
+      throw new Error("Cannot return null for a required field.");
+    } else {
+      return value.toBytes();
+    }
+  }
+
+  set signer(value: Bytes) {
+    this.set("signer", Value.fromBytes(value));
+  }
+
+  get signatureData(): Bytes {
+    let value = this.get("signatureData");
+    if (!value || value.kind == ValueKind.NULL) {
+      throw new Error("Cannot return null for a required field.");
+    } else {
+      return value.toBytes();
+    }
+  }
+
+  set signatureData(value: Bytes) {
+    this.set("signatureData", Value.fromBytes(value));
+  }
+}
+
+export class MonthlySignatureCount extends Entity {
+  constructor(id: string) {
+    super();
+    this.set("id", Value.fromString(id));
+  }
+
+  save(): void {
+    let id = this.get("id");
+    assert(
+      id != null,
+      "Cannot save MonthlySignatureCount entity without an ID"
+    );
+    if (id) {
+      assert(
+        id.kind == ValueKind.STRING,
+        `Entities of type MonthlySignatureCount must have an ID of type String but the id '${id.displayData()}' is of type ${id.displayKind()}`
+      );
+      store.set("MonthlySignatureCount", id.toString(), this);
+    }
+  }
+
+  static loadInBlock(id: string): MonthlySignatureCount | null {
+    return changetype<MonthlySignatureCount | null>(
+      store.get_in_block("MonthlySignatureCount", id)
+    );
+  }
+
+  static load(id: string): MonthlySignatureCount | null {
+    return changetype<MonthlySignatureCount | null>(
+      store.get("MonthlySignatureCount", id)
+    );
+  }
+
+  get id(): string {
+    let value = this.get("id");
+    if (!value || value.kind == ValueKind.NULL) {
+      throw new Error("Cannot return null for a required field.");
+    } else {
+      return value.toString();
+    }
+  }
+
+  set id(value: string) {
+    this.set("id", Value.fromString(value));
+  }
+
+  get month(): i32 {
+    let value = this.get("month");
+    if (!value || value.kind == ValueKind.NULL) {
+      return 0;
+    } else {
+      return value.toI32();
+    }
+  }
+
+  set month(value: i32) {
+    this.set("month", Value.fromI32(value));
+  }
+
+  get year(): i32 {
+    let value = this.get("year");
+    if (!value || value.kind == ValueKind.NULL) {
+      return 0;
+    } else {
+      return value.toI32();
+    }
+  }
+
+  set year(value: i32) {
+    this.set("year", Value.fromI32(value));
+  }
+
+  get count(): i32 {
+    let value = this.get("count");
+    if (!value || value.kind == ValueKind.NULL) {
+      return 0;
+    } else {
+      return value.toI32();
+    }
+  }
+
+  set count(value: i32) {
+    this.set("count", Value.fromI32(value));
+  }
+
+  get signers(): Array<Bytes> {
+    let value = this.get("signers");
+    if (!value || value.kind == ValueKind.NULL) {
+      throw new Error("Cannot return null for a required field.");
+    } else {
+      return value.toBytesArray();
+    }
+  }
+
+  set signers(value: Array<Bytes>) {
+    this.set("signers", Value.fromBytesArray(value));
+  }
+}
+
+export class Signer extends Entity {
+  constructor(id: string) {
+    super();
+    this.set("id", Value.fromString(id));
+  }
+
+  save(): void {
+    let id = this.get("id");
+    assert(id != null, "Cannot save Signer entity without an ID");
+    if (id) {
+      assert(
+        id.kind == ValueKind.STRING,
+        `Entities of type Signer must have an ID of type String but the id '${id.displayData()}' is of type ${id.displayKind()}`
+      );
+      store.set("Signer", id.toString(), this);
+    }
+  }
+
+  static loadInBlock(id: string): Signer | null {
+    return changetype<Signer | null>(store.get_in_block("Signer", id));
+  }
+
+  static load(id: string): Signer | null {
+    return changetype<Signer | null>(store.get("Signer", id));
+  }
+
+  get id(): string {
+    let value = this.get("id");
+    if (!value || value.kind == ValueKind.NULL) {
+      throw new Error("Cannot return null for a required field.");
+    } else {
+      return value.toString();
+    }
+  }
+
+  set id(value: string) {
+    this.set("id", Value.fromString(value));
+  }
+}
