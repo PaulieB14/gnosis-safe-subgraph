@@ -1,11 +1,7 @@
-import { Bytes } from '@graphprotocol/graph-ts'
-import { SignMsg as SignMsgEvent } from '../generated/GnosisSafeL2/GnosisSafeL2'
-import { SignMsg } from '../generated/schema'
-import { Signature, SafeMultiSigTransaction, Signer } from '../generated/schema'
-import { BigInt } from '@graphprotocol/graph-ts'
-import { Contract, ExecutionSuccess } from '../generated/Contract/Contract'
-import { UserActivity } from '../generated/schema'
+// Importing required types from the graph-ts library
+import { BigInt, Bytes } from '@graphprotocol/graph-ts'
 
+// Importing event types from the generated GnosisSafeL2 contract
 import {
   AddedOwner as AddedOwnerEvent,
   ApproveHash as ApproveHashEvent,
@@ -25,6 +21,8 @@ import {
   SafeSetup as SafeSetupEvent,
   SignMsg as SignMsgEvent,
 } from '../generated/GnosisSafeL2/GnosisSafeL2'
+
+// Importing schema types from the generated schema
 import {
   AddedOwner,
   ApproveHash,
@@ -43,6 +41,7 @@ import {
   SafeReceived,
   SafeSetup,
   SignMsg,
+  UserActivity,
 } from '../generated/schema'
 
 export function handleAddedOwner(event: AddedOwnerEvent): void {
