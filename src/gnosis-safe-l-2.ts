@@ -181,21 +181,30 @@ export function handleExecutionFromModuleSuccess(
 
 export function handleExecutionSuccess(event: ExecutionSuccessEvent): void {
   let timestamp = event.block.timestamp.toI32()
-  let executor = event.transaction.from // Assuming 'executor' represents the user performing the transaction.
+  let executor = event.transaction.from // The user performing the transaction.
 
   let date = new Date(timestamp * 1000) // Convert to milliseconds for accurate date manipulation.
   let year = date.getUTCFullYear()
   let month = date.getUTCMonth() + 1 // JavaScript months are 0-indexed.
 
   let id = executor.toHex() + '-' + year.toString() + '-' + month.toString()
-  let activity = new UserActivity(id)
 
-  activity.user = executor // Make sure this assignment is correct based on your schema definitions.
+  let activity = UserActivity.load(id)
 
-  activity.year = year
-  activity.month = month
-  activity.signatures = 0 // Initialize if tracking signatures.
-  activity.executions = 1 // Start with 1 execution.
+  if (!activity) {
+    activity = new UserActivity(id)
+    activity.user = executor
+    activity.year = year
+    activity.month = month
+    activity.signatures = 0 // Initialize if specifically tracking signatures.
+    activity.executions = 0 // Initialize executions.
+  }
+
+  // Assume each executionSuccess event represents a signature or execution.
+  activity.executions += 1
+  // If you're also tracking signatures, adjust accordingly.
+  // For instance, if one execution can have multiple signatures, you might need to parse and count signatures from the event.
+
   activity.save()
 }
 
