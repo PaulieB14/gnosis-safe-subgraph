@@ -43,13 +43,16 @@ import {
 } from '../generated/schema'
 
 export function handleAddedOwner(event: AddedOwnerEvent): void {
+  // Directly use the transaction hash as a base for the unique ID
   let baseId = event.transaction.hash
-  let uniqueId = crypto.keccak256(
-    baseId.concat(event.logIndex.toI32().toString()),
-  )
+  // Append the log index bytes to the transaction hash bytes
+  let logIndexBytes = Bytes.fromI32(event.logIndex.toI32())
+  let combined = Bytes.concat(baseId, logIndexBytes)
 
-  // Directly use the uniqueId as the entity ID.
-  let entity = new AddedOwner(uniqueId.toHex())
+  // Use keccak256 hash to ensure the ID is unique and of type Bytes
+  let uniqueId = crypto.keccak256(combined)
+
+  let entity = new AddedOwner(uniqueId) // uniqueId is already of type Bytes, no need for toHex()
 
   entity.owner = event.params.owner
   entity.blockNumber = event.block.number
