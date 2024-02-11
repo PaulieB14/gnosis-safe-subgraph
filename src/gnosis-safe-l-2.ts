@@ -1,5 +1,4 @@
-// Importing required types from the graph-ts library
-import { BigInt, Bytes } from '@graphprotocol/graph-ts'
+import { Bytes, crypto } from '@graphprotocol/graph-ts'
 
 // Importing event types from the generated GnosisSafeL2 contract
 import {
@@ -45,10 +44,13 @@ import {
 } from '../generated/schema'
 
 export function handleAddedOwner(event: AddedOwnerEvent): void {
-  // Directly create the ID string without attempting to convert it to Bytes
-  let id = event.transaction.hash.toHex() + '-' + event.logIndex.toString()
+  // Directly use the transaction hash as the base for the entity ID
+  let baseId = event.transaction.hash
+  let uniqueId = crypto.keccak256(
+    Bytes.fromUTF8(baseId.toHex() + '-' + event.logIndex.toString()),
+  )
 
-  let entity = new AddedOwner(id) // Use the string ID directly if your system supports it
+  let entity = new AddedOwner(uniqueId)
 
   entity.owner = event.params.owner
   entity.blockNumber = event.block.number
