@@ -43,20 +43,13 @@ import {
 } from '../generated/schema'
 
 export function handleAddedOwner(event: AddedOwnerEvent): void {
-  // Create a new Bytes array for the combined data
   let baseId = event.transaction.hash
   let logIndexBytes = Bytes.fromI32(event.logIndex.toI32())
 
-  // Manual concatenation
-  let combined = new Uint8Array(baseId.length + logIndexBytes.length)
-  combined.set(baseId, 0)
-  combined.set(logIndexBytes, baseId.length)
-  let combinedBytes = Bytes.fromUint8Array(combined)
+  // Combine baseId and logIndexBytes. Assuming direct concatenation is not supported, use crypto.keccak256 for a unique hash.
+  let uniqueId = crypto.keccak256(Bytes.concat(baseId, logIndexBytes))
 
-  // Hash the combined bytes to get a unique ID
-  let uniqueId = crypto.keccak256(combinedBytes)
-
-  let entity = new AddedOwner(uniqueId)
+  let entity = new AddedOwner(uniqueId) // uniqueId is of type Bytes, directly passed without conversion
   entity.owner = event.params.owner
   entity.blockNumber = event.block.number
   entity.blockTimestamp = event.block.timestamp
