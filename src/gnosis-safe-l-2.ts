@@ -45,17 +45,10 @@ import {
 } from '../generated/schema'
 
 export function handleAddedOwner(event: AddedOwnerEvent): void {
-  let idString =
-    event.transaction.hash.toHex() + '-' + event.logIndex.toString()
-  let idBytes = Bytes.fromHexString(idString)
+  // Directly create the ID string without attempting to convert it to Bytes
+  let id = event.transaction.hash.toHex() + '-' + event.logIndex.toString()
 
-  // Check for null after conversion (good practice, though in this context idBytes should not be null)
-  if (idBytes === null) {
-    throw new Error('Failed to convert ID string to Bytes')
-  }
-
-  // Directly use idBytes when creating the entity, without converting it to hex string
-  let entity = new AddedOwner(idBytes)
+  let entity = new AddedOwner(id) // Use the string ID directly if your system supports it
 
   entity.owner = event.params.owner
   entity.blockNumber = event.block.number
