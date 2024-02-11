@@ -191,22 +191,21 @@ export function handleExecutionFromModuleSuccess(
 
 export function handleExecutionSuccess(event: ExecutionSuccessEvent): void {
   let timestamp = event.block.timestamp.toI32()
+  let executor = event.transaction.from // Assuming 'executor' represents the user performing the transaction.
 
-  // Assuming a direct way to obtain the executor (e.g., transaction sender)
-  let executor = event.transaction.from // If executor is meant to be the transaction sender
-
-  let date = new Date(timestamp * 1000) // Convert to milliseconds
+  let date = new Date(timestamp * 1000) // Convert to milliseconds for accurate date manipulation.
   let year = date.getUTCFullYear()
-  let month = date.getUTCMonth() + 1 // getUTCMonth() returns 0-11
+  let month = date.getUTCMonth() + 1 // JavaScript months are 0-indexed.
 
-  // Assuming `executor` is a valid Bytes type and can be directly used
   let id = executor.toHex() + '-' + year.toString() + '-' + month.toString()
-  let activity = new UserActivity(executor.toHex() + '-' + date.toISOString())
+  let activity = new UserActivity(id)
 
-  activity.year = year // Assuming year and month are stored as Int in your schema
+  activity.user = executor // Make sure this assignment is correct based on your schema definitions.
+
+  activity.year = year
   activity.month = month
-  activity.signatures = 0 // Initialize if tracking signatures, assuming Int type
-  activity.executions = 1 // Start with 1 execution, assuming Int type
+  activity.signatures = 0 // Initialize if tracking signatures.
+  activity.executions = 1 // Start with 1 execution.
   activity.save()
 }
 
