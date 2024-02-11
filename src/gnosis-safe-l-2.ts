@@ -1,8 +1,8 @@
 import { Bytes, crypto } from '@graphprotocol/graph-ts'
-
+import { AddedOwner as AddedOwnerEvent } from '../generated/GnosisSafeL2/GnosisSafeL2'
+import { AddedOwner } from '../generated/schema'
 // Importing event types from the generated GnosisSafeL2 contract
 import {
-  AddedOwner as AddedOwnerEvent,
   ApproveHash as ApproveHashEvent,
   ChangedFallbackHandler as ChangedFallbackHandlerEvent,
   ChangedGuard as ChangedGuardEvent,
@@ -23,7 +23,6 @@ import {
 
 // Importing schema types from the generated schema
 import {
-  AddedOwner,
   ApproveHash,
   ChangedFallbackHandler,
   ChangedGuard,
@@ -44,13 +43,13 @@ import {
 } from '../generated/schema'
 
 export function handleAddedOwner(event: AddedOwnerEvent): void {
-  // Directly use the transaction hash as the base for the entity ID
   let baseId = event.transaction.hash
   let uniqueId = crypto.keccak256(
-    Bytes.fromUTF8(baseId.toHex() + '-' + event.logIndex.toString()),
+    baseId.concat(event.logIndex.toI32().toString()),
   )
 
-  let entity = new AddedOwner(uniqueId)
+  // Directly use the uniqueId as the entity ID.
+  let entity = new AddedOwner(uniqueId.toHex())
 
   entity.owner = event.params.owner
   entity.blockNumber = event.block.number
