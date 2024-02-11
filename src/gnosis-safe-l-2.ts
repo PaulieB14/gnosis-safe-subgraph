@@ -45,9 +45,16 @@ import {
 } from '../generated/schema'
 
 export function handleAddedOwner(event: AddedOwnerEvent): void {
-  let entity = new AddedOwner(
-    event.transaction.hash.toHex() + '-' + event.logIndex.toString(),
-  )
+  let idString =
+    event.transaction.hash.toHex() + '-' + event.logIndex.toString()
+  let idBytes = Bytes.fromHexString(idString)
+
+  if (!idBytes) {
+    throw new Error('Invalid ID format')
+  }
+
+  let entity = new AddedOwner(idBytes.toHex())
+
   entity.owner = event.params.owner
   entity.blockNumber = event.block.number
   entity.blockTimestamp = event.block.timestamp
@@ -182,18 +189,22 @@ export function handleExecutionFromModuleSuccess(
 
 export function handleExecutionSuccess(event: ExecutionSuccessEvent): void {
   let timestamp = event.block.timestamp.toI32()
-  let executor = event.params.executor
-  let year = timestamp / 31536000 // Simplified conversion, not accurate
-  let month = (timestamp % 31536000) / 2628000 // Simplified, adjust for accuracy
 
-  let id =
-    executor.toHexString() + '-' + year.toString() + '-' + month.toString()
-  let activity = new UserActivity(id) // Assuming UserActivity is defined in your schema
-  activity.executor = executor
-  activity.year = BigInt.fromI32(year)
-  activity.month = BigInt.fromI32(month)
-  activity.signatures = BigInt.fromI32(0) // Initialize if tracking signatures
-  activity.executions = BigInt.fromI32(1) // Start with 1 execution
+  // Assuming a direct way to obtain the executor (e.g., transaction sender)
+  let executor = event.transaction.from // If executor is meant to be the transaction sender
+
+  let date = new Date(timestamp * 1000) // Convert to milliseconds
+  let year = date.getUTCFullYear()
+  let month = date.getUTCMonth() + 1 // getUTCMonth() returns 0-11
+
+  // Assuming `executor` is a valid Bytes type and can be directly used
+  let id = executor.toHex() + '-' + year.toString() + '-' + month.toString()
+  let activity = new UserActivity(executor.toHex() + '-' + date.toISOString())
+
+  activity.year = year // Assuming year and month are stored as Int in your schema
+  activity.month = month
+  activity.signatures = 0 // Initialize if tracking signatures, assuming Int type
+  activity.executions = 1 // Start with 1 execution, assuming Int type
   activity.save()
 }
 
