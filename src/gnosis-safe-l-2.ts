@@ -49,11 +49,13 @@ export function handleAddedOwner(event: AddedOwnerEvent): void {
     event.transaction.hash.toHex() + '-' + event.logIndex.toString()
   let idBytes = Bytes.fromHexString(idString)
 
-  if (!idBytes) {
-    throw new Error('Invalid ID format')
+  // Check for null after conversion (good practice, though in this context idBytes should not be null)
+  if (idBytes === null) {
+    throw new Error('Failed to convert ID string to Bytes')
   }
 
-  let entity = new AddedOwner(idBytes.toHex())
+  // Directly use idBytes when creating the entity, without converting it to hex string
+  let entity = new AddedOwner(idBytes)
 
   entity.owner = event.params.owner
   entity.blockNumber = event.block.number
