@@ -44,12 +44,9 @@ import {
 
 export function handleAddedOwner(event: AddedOwnerEvent): void {
   let baseId = event.transaction.hash
-  let logIndexBytes = Bytes.fromI32(event.logIndex.toI32())
-
-  // Combine baseId and logIndexBytes. Assuming direct concatenation is not supported, use crypto.keccak256 for a unique hash.
-  let uniqueId = crypto.keccak256(Bytes.concat(baseId, logIndexBytes))
-
-  let entity = new AddedOwner(uniqueId) // uniqueId is of type Bytes, directly passed without conversion
+  // Directly use the transaction hash as the ID if it ensures uniqueness
+  let uniqueId = baseId
+  let entity = new AddedOwner(uniqueId) // Assuming uniqueId ensures entity uniqueness and is of type Bytes
   entity.owner = event.params.owner
   entity.blockNumber = event.block.number
   entity.blockTimestamp = event.block.timestamp
