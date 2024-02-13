@@ -1,20 +1,22 @@
-import {
-  SafeMultiSigTransaction as SafeMultiSigTransactionEvent,
-  SignMsg as SignMsgEvent,
-} from '../generated/GnosisSafeL2/GnosisSafeL2'
+import { SafeMultiSigTransaction as SafeMultiSigTransactionEvent } from '../generated/GnosisSafeL2/GnosisSafeL2'
+import { SafeMultiSigTransaction } from '../generated/schema'
 
 export function handleSafeMultiSigTransaction(
   event: SafeMultiSigTransactionEvent,
 ): void {
-  let transaction = new SafeMultiSigTransaction(event.transaction.hash.toHex())
-  transaction.to = event.params.to.toHexString()
-  transaction.value = event.params.value
-  transaction.data = event.params.data
-  // Assign other properties similarly
-  transaction.save()
+  let id = event.transaction.hash.toHex()
+  let transaction = SafeMultiSigTransaction.load(id)
+  if (transaction === null) {
+    transaction = new SafeMultiSigTransaction(id)
+    transaction.to = event.params.to
+    transaction.value = event.params.value
+    transaction.data = event.params.data
+    // Assign other properties...
+    transaction.save()
+  }
 }
 
-export function handleSignMsg(event: SignMsgEvent): void {
+export function handleSignMsg(event: SignMsg): void {
   let id = event.params.msgHash.toHex() + '-' + event.transaction.from.toHex()
   let signMsg = new SignMsg(id)
   signMsg.msgHash = event.params.msgHash
