@@ -1,25 +1,15 @@
-type SafeMultiSigTransaction @entity(immutable: true) {
+type SafeMultiSigTransaction @entity {
   id: Bytes!
-  to: Bytes! # address
-  value: BigInt! # uint256
-  data: Bytes! # bytes
-  operation: Int! # uint8
-  safeTxGas: BigInt! # uint256
-  baseGas: BigInt! # uint256
-  gasPrice: BigInt! # uint256
-  gasToken: Bytes! # address
-  refundReceiver: Bytes! # address
-  signatures: Bytes! # bytes
-  additionalInfo: Bytes! # bytes
-  blockNumber: BigInt!
-  blockTimestamp: BigInt!
-  transactionHash: Bytes!
-}
-
-type SignMsg @entity {
-  id: Bytes!
-  msgHash: Bytes! # bytes32
-  signer: Bytes! # Address of the signer, added to track who signed the message
+  to: Bytes!
+  value: BigInt!
+  data: Bytes!
+  operation: Int!
+  safeTxGas: BigInt!
+  baseGas: BigInt!
+  gasPrice: BigInt!
+  gasToken: Bytes!
+  refundReceiver: Bytes!
+  signatures: [Signature!]! @derivedFrom(field: "transaction")
   blockNumber: BigInt!
   blockTimestamp: BigInt!
   transactionHash: Bytes!
@@ -27,20 +17,24 @@ type SignMsg @entity {
 
 type Signature @entity {
   id: ID!
-  transaction: SafeMultiSigTransaction! # Direct link without @derivedFrom
-  signer: Bytes! # Address of the signer
-  signatureData: Bytes! # The actual signature
+  transaction: SafeMultiSigTransaction! @link
+  signer: Signer! @link
+  signatureData: Bytes!
+  blockNumber: BigInt!
+  blockTimestamp: BigInt!
 }
 
 type Signer @entity {
-  id: ID! # Address of the signer
+  id: ID!
+  signedTransactions: [Signature!]! @derivedFrom(field: "signer")
+  activities: [UserActivity!]! @derivedFrom(field: "user")
 }
 
 type UserActivity @entity {
   id: ID!
-  user: Bytes! # Ethereum address of the user
+  user: Signer! @link
   month: Int!
   year: Int!
-  signatures: Int! # Number of signatures this month
-  executions: Int! # Number of executions this month
+  signaturesCount: Int!
+  executionsCount: Int!
 }

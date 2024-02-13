@@ -1,53 +1,43 @@
-import { Bytes } from '@graphprotocol/graph-ts'
-// Importing only the necessary event types
-import {
-  SafeMultiSigTransaction as SafeMultiSigTransactionEvent,
-  SignMsg as SignMsgEvent,
-} from '../generated/GnosisSafeL2/GnosisSafeL2'
-
-// Importing schema types for the entities being used
 import {
   SafeMultiSigTransaction,
   SignMsg,
-  Signature, // Assuming you have logic to handle this
-  Signer, // Assuming you have logic to handle this
-  UserActivity,
-} from '../generated/schema'
+} from '../generated/GnosisSafeL2/GnosisSafeL2'
+import { Signature, Signer, UserActivity } from '../generated/schema'
 
 export function handleSafeMultiSigTransaction(
-  event: SafeMultiSigTransactionEvent,
+  event: SafeMultiSigTransaction,
 ): void {
-  let entity = new SafeMultiSigTransaction(
-    event.transaction.hash.concatI32(event.logIndex.toI32()),
-  )
-  entity.to = event.params.to
-  entity.value = event.params.value
-  entity.data = event.params.data
-  entity.operation = event.params.operation
-  entity.safeTxGas = event.params.safeTxGas
-  entity.baseGas = event.params.baseGas
-  entity.gasPrice = event.params.gasPrice
-  entity.gasToken = event.params.gasToken
-  entity.refundReceiver = event.params.refundReceiver
-  entity.signatures = event.params.signatures
-  entity.additionalInfo = event.params.additionalInfo
+  let transaction = new SafeMultiSigTransaction(event.transaction.hash.toHex())
 
-  entity.blockNumber = event.block.number
-  entity.blockTimestamp = event.block.timestamp
-  entity.transactionHash = event.transaction.hash
+  // Set transaction fields...
+  transaction.save()
 
-  entity.save()
+  // Example for handling signerId extraction and user activity update
+  // This is pseudocode; actual implementation will vary
+  let signerIds: string[] = extractSignerIds(event) // Implement this based on your data structure
+  signerIds.forEach((signerId) => {
+    let signer = Signer.load(signerId) || new Signer(signerId)
+    signer.save()
+
+    let signature = new Signature(
+      `${event.transaction.hash.toHex()}-${signerId}`,
+    )
+    // Set signature fields...
+    signature.save()
+
+    updateUserActivity(signerId, event.block.timestamp)
+  })
 }
 
 export function handleSignMsg(event: SignMsgEvent): void {
-  // Directly use the transaction hash (Bytes) as the entity ID
-  let entity = new SignMsg(event.transaction.hash)
-
-  entity.msgHash = event.params.msgHash
-  entity.signer = event.transaction.from // Assuming this is directly assignable as Bytes
-  entity.blockNumber = event.block.number
-  entity.blockTimestamp = event.block.timestamp
-  entity.transactionHash = event.transaction.hash
-
+  let entity = new SignMsg(event.transaction.hash.toHex())
+  // Set SignMsg fields...
   entity.save()
+
+  updateUserActivity(event.transaction.from.toHex(), event.block.timestamp)
+}
+
+function updateUserActivity(signerId: string, timestamp: BigInt): void {
+  // Implement logic to update or create UserActivity
+  // This includes extracting month and year from timestamp and adjusting counts
 }
