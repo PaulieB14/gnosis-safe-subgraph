@@ -14,62 +14,22 @@ dataSources:
       apiVersion: 0.0.7
       language: wasm/assemblyscript
       entities:
-        - AddedOwner
-        - ApproveHash
-        - ChangedFallbackHandler
-        - ChangedGuard
-        - ChangedThreshold
-        - DisabledModule
-        - EnabledModule
-        - ExecutionFailure
-        - ExecutionFromModuleFailure
-        - ExecutionFromModuleSuccess
-        - ExecutionSuccess
-        - RemovedOwner
-        - SafeModuleTransaction
         - SafeMultiSigTransaction
-        - SafeReceived
-        - SafeSetup
         - SignMsg
         - Signature
-        - MonthlySignatureCount
         - Signer
+        - UserActivity
       abis:
         - name: GnosisSafeL2
           file: ./abis/GnosisSafeL2.json
       eventHandlers:
-        - event: AddedOwner(address)
-          handler: handleAddedOwner
-        - event: ApproveHash(indexed bytes32,indexed address)
-          handler: handleApproveHash
-        - event: ChangedFallbackHandler(address)
-          handler: handleChangedFallbackHandler
-        - event: ChangedGuard(address)
-          handler: handleChangedGuard
-        - event: ChangedThreshold(uint256)
-          handler: handleChangedThreshold
-        - event: DisabledModule(address)
-          handler: handleDisabledModule
-        - event: EnabledModule(address)
-          handler: handleEnabledModule
-        - event: ExecutionFailure(bytes32,uint256)
-          handler: handleExecutionFailure
-        - event: ExecutionFromModuleFailure(indexed address)
-          handler: handleExecutionFromModuleFailure
-        - event: ExecutionFromModuleSuccess(indexed address)
-          handler: handleExecutionFromModuleSuccess
-        - event: ExecutionSuccess(bytes32,uint256)
-          handler: handleExecutionSuccess
-        - event: RemovedOwner(address)
-          handler: handleRemovedOwner
-        - event: SafeModuleTransaction(address,address,uint256,bytes,uint8)
-          handler: handleSafeModuleTransaction
         - event: SafeMultiSigTransaction(address,uint256,bytes,uint8,uint256,uint256,uint256,address,address,bytes,bytes)
           handler: handleSafeMultiSigTransaction
-        - event: SafeReceived(indexed address,uint256)
-          handler: handleSafeReceived
-        - event: SafeSetup(indexed address,address[],uint256,address,address)
-          handler: handleSafeSetup
         - event: SignMsg(indexed bytes32)
           handler: handleSignMsg
+        # Add event handlers for Signature creation and Signer/UserActivity updates.
+        # Note: You will need to define custom events or logic within your mapping scripts
+        # to handle the creation of Signature entities and the update of UserActivity based on
+        # transaction and message signing events. This might involve parsing transaction receipts
+        # or leveraging events already captured by SafeMultiSigTransaction and SignMsg handlers.
       file: ./src/gnosis-safe-l-2.ts
