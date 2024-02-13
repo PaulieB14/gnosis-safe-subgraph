@@ -1,58 +1,56 @@
-// Importing contract and schema-generated entities
+import { BigInt } from '@graphprotocol/graph-ts'
 import {
-  GnosisSafeL2, // This should be the name of the generated contract API from your ABI
+  GnosisSafeL2,
+  AddedOwner,
+  ApproveHash,
+  SafeMultiSigTransaction as SafeMultiSigTransactionEvent,
+  SignMsg as SignMsgEvent,
 } from '../generated/GnosisSafeL2/GnosisSafeL2'
-import {
-  SafeMultiSigTransaction,
-  Signature,
-  Signer,
-  UserActivity,
-} from '../generated/schema'
+import { Signature, Signer, UserActivity } from '../generated/schema'
 
-// Assuming `SafeMultiSigTransaction` and `SignMsg` event handlers need corrections
-
+// Handle SafeMultiSigTransaction events
 export function handleSafeMultiSigTransaction(
-  event: GnosisSafeL2.SafeMultiSigTransaction,
+  event: SafeMultiSigTransactionEvent,
 ): void {
   let id = event.transaction.hash.toHex()
-  let transaction = SafeMultiSigTransaction.load(id)
-  if (transaction == null) {
-    transaction = new SafeMultiSigTransaction(id)
-    transaction.to = event.params.to
-    transaction.value = event.params.value
-    transaction.data = event.params.data
-    transaction.operation = event.params.operation.toI32()
-    transaction.safeTxGas = event.params.safeTxGas
-    transaction.baseGas = event.params.baseGas
-    transaction.gasPrice = event.params.gasPrice
-    transaction.gasToken = event.params.gasToken
-    transaction.refundReceiver = event.params.refundReceiver
-    transaction.signatures = [] // Assuming this will be populated later or adjusted based on your logic
-    transaction.blockNumber = event.block.number
-    transaction.blockTimestamp = event.block.timestamp
-    transaction.transactionHash = event.transaction.hash
-    transaction.save()
+  let transaction = new SafeMultiSigTransaction(id)
+  transaction.to = event.params.to
+  transaction.value = event.params.value
+  transaction.data = event.params.data
+  // Add other fields according to your schema definitions...
+  transaction.save()
+
+  // Logic to handle Signer and Signature entities creation/updation
+  // Plus, update UserActivity based on this transaction
+}
+
+// Handle SignMsg events
+export function handleSignMsg(event: SignMsgEvent): void {
+  let id = event.params.msgHash.toHex() + '-' + event.params.owner.toHex()
+  let signMsg = new SignMsg(id)
+  signMsg.msgHash = event.params.msgHash
+  signMsg.signer = event.params.owner
+  // Add other fields according to your schema definitions...
+  signMsg.save()
+
+  // Logic to update UserActivity based on this signed message
+}
+
+// Example function to update or create UserActivity
+function updateUserActivity(userId: string, isSignature: boolean): void {
+  let userActivity = UserActivity.load(userId)
+  if (!userActivity) {
+    userActivity = new UserActivity(userId)
+    userActivity.signaturesCount = 0
+    userActivity.executionsCount = 0
+    // Initialize other fields...
   }
 
-  // Signature and Signer logic needs to be implemented here
-  // This pseudocode assumes you will extract and process signatures to update related entities
-}
+  if (isSignature) {
+    userActivity.signaturesCount += 1
+  } else {
+    userActivity.executionsCount += 1
+  }
 
-export function handleSignMsg(event: GnosisSafeL2.SignMsg): void {
-  let msg = new SignMsg(event.transaction.hash.toHex())
-  msg.msgHash = event.params.msgHash
-  msg.signer = event.params.signer
-  msg.blockNumber = event.block.number
-  msg.blockTimestamp = event.block.timestamp
-  msg.transactionHash = event.transaction.hash
-  msg.save()
-
-  // Update or create UserActivity for the signer
-  updateUserActivity(event.params.signer.toHex(), event.block.timestamp)
-}
-
-function updateUserActivity(signerAddress: string, timestamp: BigInt): void {
-  // This function should create or update a UserActivity entity for a signer
-  // Extract month and year from timestamp to use as part of the UserActivity ID
-  // Increment signaturesCount or executionsCount as appropriate
+  userActivity.save()
 }
