@@ -174,137 +174,12 @@ export class SafeMultiSigTransaction extends Entity {
     this.set("refundReceiver", Value.fromBytes(value));
   }
 
-  get signatures(): Bytes {
-    let value = this.get("signatures");
-    if (!value || value.kind == ValueKind.NULL) {
-      throw new Error("Cannot return null for a required field.");
-    } else {
-      return value.toBytes();
-    }
-  }
-
-  set signatures(value: Bytes) {
-    this.set("signatures", Value.fromBytes(value));
-  }
-
-  get additionalInfo(): Bytes {
-    let value = this.get("additionalInfo");
-    if (!value || value.kind == ValueKind.NULL) {
-      throw new Error("Cannot return null for a required field.");
-    } else {
-      return value.toBytes();
-    }
-  }
-
-  set additionalInfo(value: Bytes) {
-    this.set("additionalInfo", Value.fromBytes(value));
-  }
-
-  get blockNumber(): BigInt {
-    let value = this.get("blockNumber");
-    if (!value || value.kind == ValueKind.NULL) {
-      throw new Error("Cannot return null for a required field.");
-    } else {
-      return value.toBigInt();
-    }
-  }
-
-  set blockNumber(value: BigInt) {
-    this.set("blockNumber", Value.fromBigInt(value));
-  }
-
-  get blockTimestamp(): BigInt {
-    let value = this.get("blockTimestamp");
-    if (!value || value.kind == ValueKind.NULL) {
-      throw new Error("Cannot return null for a required field.");
-    } else {
-      return value.toBigInt();
-    }
-  }
-
-  set blockTimestamp(value: BigInt) {
-    this.set("blockTimestamp", Value.fromBigInt(value));
-  }
-
-  get transactionHash(): Bytes {
-    let value = this.get("transactionHash");
-    if (!value || value.kind == ValueKind.NULL) {
-      throw new Error("Cannot return null for a required field.");
-    } else {
-      return value.toBytes();
-    }
-  }
-
-  set transactionHash(value: Bytes) {
-    this.set("transactionHash", Value.fromBytes(value));
-  }
-}
-
-export class SignMsg extends Entity {
-  constructor(id: Bytes) {
-    super();
-    this.set("id", Value.fromBytes(id));
-  }
-
-  save(): void {
-    let id = this.get("id");
-    assert(id != null, "Cannot save SignMsg entity without an ID");
-    if (id) {
-      assert(
-        id.kind == ValueKind.BYTES,
-        `Entities of type SignMsg must have an ID of type Bytes but the id '${id.displayData()}' is of type ${id.displayKind()}`
-      );
-      store.set("SignMsg", id.toBytes().toHexString(), this);
-    }
-  }
-
-  static loadInBlock(id: Bytes): SignMsg | null {
-    return changetype<SignMsg | null>(
-      store.get_in_block("SignMsg", id.toHexString())
+  get signatures(): SignatureLoader {
+    return new SignatureLoader(
+      "SafeMultiSigTransaction",
+      this.get("id")!.toString(),
+      "signatures"
     );
-  }
-
-  static load(id: Bytes): SignMsg | null {
-    return changetype<SignMsg | null>(store.get("SignMsg", id.toHexString()));
-  }
-
-  get id(): Bytes {
-    let value = this.get("id");
-    if (!value || value.kind == ValueKind.NULL) {
-      throw new Error("Cannot return null for a required field.");
-    } else {
-      return value.toBytes();
-    }
-  }
-
-  set id(value: Bytes) {
-    this.set("id", Value.fromBytes(value));
-  }
-
-  get msgHash(): Bytes {
-    let value = this.get("msgHash");
-    if (!value || value.kind == ValueKind.NULL) {
-      throw new Error("Cannot return null for a required field.");
-    } else {
-      return value.toBytes();
-    }
-  }
-
-  set msgHash(value: Bytes) {
-    this.set("msgHash", Value.fromBytes(value));
-  }
-
-  get signer(): Bytes {
-    let value = this.get("signer");
-    if (!value || value.kind == ValueKind.NULL) {
-      throw new Error("Cannot return null for a required field.");
-    } else {
-      return value.toBytes();
-    }
-  }
-
-  set signer(value: Bytes) {
-    this.set("signer", Value.fromBytes(value));
   }
 
   get blockNumber(): BigInt {
@@ -399,17 +274,17 @@ export class Signature extends Entity {
     this.set("transaction", Value.fromBytes(value));
   }
 
-  get signer(): Bytes {
+  get signer(): string {
     let value = this.get("signer");
     if (!value || value.kind == ValueKind.NULL) {
       throw new Error("Cannot return null for a required field.");
     } else {
-      return value.toBytes();
+      return value.toString();
     }
   }
 
-  set signer(value: Bytes) {
-    this.set("signer", Value.fromBytes(value));
+  set signer(value: string) {
+    this.set("signer", Value.fromString(value));
   }
 
   get signatureData(): Bytes {
@@ -423,6 +298,32 @@ export class Signature extends Entity {
 
   set signatureData(value: Bytes) {
     this.set("signatureData", Value.fromBytes(value));
+  }
+
+  get blockNumber(): BigInt {
+    let value = this.get("blockNumber");
+    if (!value || value.kind == ValueKind.NULL) {
+      throw new Error("Cannot return null for a required field.");
+    } else {
+      return value.toBigInt();
+    }
+  }
+
+  set blockNumber(value: BigInt) {
+    this.set("blockNumber", Value.fromBigInt(value));
+  }
+
+  get blockTimestamp(): BigInt {
+    let value = this.get("blockTimestamp");
+    if (!value || value.kind == ValueKind.NULL) {
+      throw new Error("Cannot return null for a required field.");
+    } else {
+      return value.toBigInt();
+    }
+  }
+
+  set blockTimestamp(value: BigInt) {
+    this.set("blockTimestamp", Value.fromBigInt(value));
   }
 }
 
@@ -463,6 +364,22 @@ export class Signer extends Entity {
 
   set id(value: string) {
     this.set("id", Value.fromString(value));
+  }
+
+  get signedTransactions(): SignatureLoader {
+    return new SignatureLoader(
+      "Signer",
+      this.get("id")!.toString(),
+      "signedTransactions"
+    );
+  }
+
+  get activities(): UserActivityLoader {
+    return new UserActivityLoader(
+      "Signer",
+      this.get("id")!.toString(),
+      "activities"
+    );
   }
 }
 
@@ -507,17 +424,17 @@ export class UserActivity extends Entity {
     this.set("id", Value.fromString(value));
   }
 
-  get user(): Bytes {
+  get user(): string {
     let value = this.get("user");
     if (!value || value.kind == ValueKind.NULL) {
       throw new Error("Cannot return null for a required field.");
     } else {
-      return value.toBytes();
+      return value.toString();
     }
   }
 
-  set user(value: Bytes) {
-    this.set("user", Value.fromBytes(value));
+  set user(value: string) {
+    this.set("user", Value.fromString(value));
   }
 
   get month(): i32 {
@@ -546,8 +463,8 @@ export class UserActivity extends Entity {
     this.set("year", Value.fromI32(value));
   }
 
-  get signatures(): i32 {
-    let value = this.get("signatures");
+  get signaturesCount(): i32 {
+    let value = this.get("signaturesCount");
     if (!value || value.kind == ValueKind.NULL) {
       return 0;
     } else {
@@ -555,12 +472,12 @@ export class UserActivity extends Entity {
     }
   }
 
-  set signatures(value: i32) {
-    this.set("signatures", Value.fromI32(value));
+  set signaturesCount(value: i32) {
+    this.set("signaturesCount", Value.fromI32(value));
   }
 
-  get executions(): i32 {
-    let value = this.get("executions");
+  get executionsCount(): i32 {
+    let value = this.get("executionsCount");
     if (!value || value.kind == ValueKind.NULL) {
       return 0;
     } else {
@@ -568,7 +485,43 @@ export class UserActivity extends Entity {
     }
   }
 
-  set executions(value: i32) {
-    this.set("executions", Value.fromI32(value));
+  set executionsCount(value: i32) {
+    this.set("executionsCount", Value.fromI32(value));
+  }
+}
+
+export class SignatureLoader extends Entity {
+  _entity: string;
+  _field: string;
+  _id: string;
+
+  constructor(entity: string, id: string, field: string) {
+    super();
+    this._entity = entity;
+    this._id = id;
+    this._field = field;
+  }
+
+  load(): Signature[] {
+    let value = store.loadRelated(this._entity, this._id, this._field);
+    return changetype<Signature[]>(value);
+  }
+}
+
+export class UserActivityLoader extends Entity {
+  _entity: string;
+  _field: string;
+  _id: string;
+
+  constructor(entity: string, id: string, field: string) {
+    super();
+    this._entity = entity;
+    this._id = id;
+    this._field = field;
+  }
+
+  load(): UserActivity[] {
+    let value = store.loadRelated(this._entity, this._id, this._field);
+    return changetype<UserActivity[]>(value);
   }
 }
