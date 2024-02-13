@@ -1,39 +1,25 @@
-import { BigInt } from '@graphprotocol/graph-ts'
 import {
-  GnosisSafeL2,
-  AddedOwner,
-  ApproveHash,
   SafeMultiSigTransaction as SafeMultiSigTransactionEvent,
   SignMsg as SignMsgEvent,
 } from '../generated/GnosisSafeL2/GnosisSafeL2'
-import { Signature, Signer, UserActivity } from '../generated/schema'
 
-// Handle SafeMultiSigTransaction events
 export function handleSafeMultiSigTransaction(
   event: SafeMultiSigTransactionEvent,
 ): void {
-  let id = event.transaction.hash.toHex()
-  let transaction = new SafeMultiSigTransaction(id)
-  transaction.to = event.params.to
+  let transaction = new SafeMultiSigTransaction(event.transaction.hash.toHex())
+  transaction.to = event.params.to.toHexString()
   transaction.value = event.params.value
   transaction.data = event.params.data
-  // Add other fields according to your schema definitions...
+  // Assign other properties similarly
   transaction.save()
-
-  // Logic to handle Signer and Signature entities creation/updation
-  // Plus, update UserActivity based on this transaction
 }
 
-// Handle SignMsg events
 export function handleSignMsg(event: SignMsgEvent): void {
-  let id = event.params.msgHash.toHex() + '-' + event.params.owner.toHex()
+  let id = event.params.msgHash.toHex() + '-' + event.transaction.from.toHex()
   let signMsg = new SignMsg(id)
   signMsg.msgHash = event.params.msgHash
-  signMsg.signer = event.params.owner
-  // Add other fields according to your schema definitions...
+  signMsg.signer = event.transaction.from
   signMsg.save()
-
-  // Logic to update UserActivity based on this signed message
 }
 
 // Example function to update or create UserActivity
