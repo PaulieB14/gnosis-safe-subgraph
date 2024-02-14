@@ -1,51 +1,41 @@
-// Importing generated classes for the contract and schema entities correctly
-import { SafeMultiSigTransaction as SafeMultiSigTransactionContract } from '../generated/GnosisSafeL2/GnosisSafeL2'
 import {
-  SafeMultiSigTransaction,
-  SignMsg,
-  UserActivity,
-} from '../generated/schema'
+  SafeMultiSigTransaction as SafeMultiSigTransactionContract,
+  ExecTransaction,
+  SafeReceived,
+} from '../generated/GnosisSafeL2/GnosisSafeL2'
+import { User, Transaction, SafeReceivedEvent } from '../generated/schema'
 
-// Handling the SafeMultiSigTransaction event
-export function handleSafeMultiSigTransaction(
-  event: SafeMultiSigTransactionContract,
-): void {
-  let id = event.transaction.hash.toHex()
-  let transaction = SafeMultiSigTransaction.load(id)
+// Example handling an execution transaction
+export function handleExecTransaction(event: ExecTransaction): void {
+  let transactionId = event.params.txHash.toHex()
+  let transaction = Transaction.load(transactionId)
   if (transaction == null) {
-    transaction = new SafeMultiSigTransaction(id)
-    transaction.to = event.params.to.toHexString() // Correctly converting address to string
-    transaction.value = event.params.value
-    transaction.data = event.params.data
-    // Assign other properties as needed
+    transaction = new Transaction(transactionId)
+    // Initialize transaction fields from event parameters
+    transaction.executed = true // Assuming this event marks the transaction as executed
     transaction.save()
   }
+
+  updateUserActivity(event.transaction.from.toHex(), true)
 }
 
-// Assuming SignMsg is an event you want to handle but was incorrectly referenced
-export function handleSignMsg(event: SignMsgEvent): void {
-  let id = event.params.msgHash.toHex() + '-' + event.transaction.from.toHex()
-  let signMsg = new SignMsg(id)
-  signMsg.msgHash = event.params.msgHash
-  signMsg.signer = event.transaction.from.toHexString() // Correctly converting address to string
-  signMsg.save()
+export function handleSafeReceived(event: SafeReceived): void {
+  let eventId = event.transaction.hash.toHex() + '-' + event.logIndex.toString()
+  let safeReceivedEvent = new SafeReceivedEvent(eventId)
+  safeReceivedEvent.sender = event.params.sender
+  safeReceivedEvent.value = event.params.value
+  safeReceivedEvent.save()
 }
 
-// Corrected example function to update or create UserActivity
-function updateUserActivity(userId: string, isSignature: boolean): void {
-  let userActivity = UserActivity.load(userId)
-  if (userActivity == null) {
-    userActivity = new UserActivity(userId)
-    userActivity.signaturesCount = 0
-    userActivity.executionsCount = 0
-    // Initialize other fields as needed
+function updateUserActivity(userId: string, executed: boolean): void {
+  let user = User.load(userId)
+  if (user == null) {
+    user = new User(userId)
+    user.signaturesCount = 0 // Initialize if tracking signatures
+    user.executionsCount = 0
   }
-
-  if (isSignature) {
-    userActivity.signaturesCount += 1
-  } else {
-    userActivity.executionsCount += 1
+  if (executed) {
+    user.executionsCount += 1
   }
-
-  userActivity.save()
+  user.save()
 }

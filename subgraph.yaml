@@ -14,22 +14,15 @@ dataSources:
       apiVersion: 0.0.7
       language: wasm/assemblyscript
       entities:
-        - SafeMultiSigTransaction
-        - SignMsg
-        - Signature
-        - Signer
+        - User
+        - Transaction
         - UserActivity
       abis:
         - name: GnosisSafeL2
           file: ./abis/GnosisSafeL2.json
       eventHandlers:
-        - event: SafeMultiSigTransaction(address,uint256,bytes,uint8,uint256,uint256,uint256,address,address,bytes,bytes)
-          handler: handleSafeMultiSigTransaction
-        - event: SignMsg(indexed bytes32)
-          handler: handleSignMsg
-        # Add event handlers for Signature creation and Signer/UserActivity updates.
-        # Note: You will need to define custom events or logic within your mapping scripts
-        # to handle the creation of Signature entities and the update of UserActivity based on
-        # transaction and message signing events. This might involve parsing transaction receipts
-        # or leveraging events already captured by SafeMultiSigTransaction and SignMsg handlers.
-      file: ./src/gnosis-safe-l-2.ts
+        - event: ApproveHash(bytes32,address)
+          handler: handleApproveHash
+        - event: ExecutionSuccess(bytes32,uint256)
+          handler: handleExecutionSuccess
+      file: ./src/mapping.ts
