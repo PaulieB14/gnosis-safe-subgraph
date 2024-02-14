@@ -21,8 +21,10 @@ dataSources:
         - name: GnosisSafeL2
           file: ./abis/GnosisSafeL2.json
       eventHandlers:
-        - event: ApproveHash(bytes32,address)
+        - event: ApproveHash(bytes32,address) # Assuming this is correct
           handler: handleApproveHash
-        - event: ExecutionSuccess(bytes32,uint256)
-          handler: handleExecutionSuccess
+        - event: ExecutionSuccess(bytes32,uint256) # Assuming this maps to handleExecTransaction in your TS
+          handler: handleExecTransaction
+        - event: SafeReceived(address,uint256) # Add this if SafeReceived is an event you want to handle
+          handler: handleSafeReceived
       file: ./src/mapping.ts
