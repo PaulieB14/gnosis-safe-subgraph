@@ -25,6 +25,4 @@ dataSources:
           handler: handleApproveHash
         - event: ExecutionSuccess(bytes32,uint256) # Assuming this maps to handleExecTransaction in your TS
           handler: handleExecTransaction
-        - event: SafeReceived(address,uint256) # Add this if SafeReceived is an event you want to handle
-          handler: handleSafeReceived
       file: ./src/gnosis-safe-l-2.ts
