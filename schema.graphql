@@ -2,7 +2,7 @@ type User @entity {
   id: ID!
   signaturesCount: Int!
   executionsCount: Int!
-  // Consider adding fields for time-based tracking if needed
+  # Consider adding fields for time-based tracking if needed
 }
 
 type Transaction @entity {
@@ -20,4 +20,3 @@ type UserActivity @entity {
   signaturesCount: Int! # Number of signatures in the time frame
   executionsCount: Int! # Number of executions in the time frame
 }
-
