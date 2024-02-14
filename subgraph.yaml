@@ -21,7 +21,7 @@ dataSources:
         - name: GnosisSafeL2
           file: ./abis/GnosisSafeL2.json
       eventHandlers:
-        - event: ApproveHash(bytes32,address) # Assuming this is correct
+        - event: ApproveHash(indexed bytes32,indexed address)
           handler: handleApproveHash
         - event: ExecutionSuccess(bytes32,uint256) # Assuming this maps to handleExecTransaction in your TS
           handler: handleExecTransaction
