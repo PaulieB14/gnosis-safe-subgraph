@@ -1,4 +1,3 @@
-// Importing generated classes for the contract and schema entities correctly
 import { SafeMultiSigTransaction as SafeMultiSigTransactionContract } from '../generated/GnosisSafeL2/GnosisSafeL2'
 import {
   SafeMultiSigTransaction,
@@ -6,7 +5,7 @@ import {
   UserActivity,
 } from '../generated/schema'
 
-// Handling the SafeMultiSigTransaction event
+
 export function handleSafeMultiSigTransaction(
   event: SafeMultiSigTransactionContract,
 ): void {
@@ -22,7 +21,7 @@ export function handleSafeMultiSigTransaction(
   }
 }
 
-// Assuming SignMsg is an event you want to handle but was incorrectly referenced
+
 export function handleSignMsg(event: SignMsgEvent): void {
   let id = event.params.msgHash.toHex() + '-' + event.transaction.from.toHex()
   let signMsg = new SignMsg(id)
@@ -31,7 +30,7 @@ export function handleSignMsg(event: SignMsgEvent): void {
   signMsg.save()
 }
 
-// Corrected example function to update or create UserActivity
+
 function updateUserActivity(userId: string, isSignature: boolean): void {
   let userActivity = UserActivity.load(userId)
   if (userActivity == null) {
