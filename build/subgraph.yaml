@@ -14,17 +14,15 @@ dataSources:
       apiVersion: 0.0.7
       language: wasm/assemblyscript
       entities:
-        - SafeMultiSigTransaction
-        - SignMsg
-        - Signature
-        - Signer
+        - User
+        - Transaction
         - UserActivity
       abis:
         - name: GnosisSafeL2
           file: GnosisSafeL2/abis/GnosisSafeL2.json
       eventHandlers:
-        - event: SafeMultiSigTransaction(address,uint256,bytes,uint8,uint256,uint256,uint256,address,address,bytes,bytes)
-          handler: handleSafeMultiSigTransaction
-        - event: SignMsg(indexed bytes32)
-          handler: handleSignMsg
+        - event: ApproveHash(indexed bytes32,indexed address)
+          handler: handleApproveHash
+        - event: ExecutionSuccess(bytes32,uint256)
+          handler: handleExecTransaction
       file: GnosisSafeL2/GnosisSafeL2.wasm

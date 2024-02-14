@@ -1,5 +1,24 @@
 import { ExecutionSuccess } from '../generated/GnosisSafeL2/GnosisSafeL2'
 import { User, Transaction } from '../generated/schema'
+import { ApproveHash } from '../generated/GnosisSafeL2/GnosisSafeL2'
+
+export function handleApproveHash(event: ApproveHash): void {
+  // The event provides the hash approved and the owner who approved it.
+  let userId = event.params.owner.toHex()
+  let approvedHash = event.params.approvedHash.toHex()
+
+  // Load or initialize the User entity from the subgraph store.
+  let user = User.load(userId)
+  if (user == null) {
+    user = new User(userId)
+    user.signaturesCount = 1 // Initialize if this is the first approval.
+    user.executionsCount = 0 // Initialize assuming no executions yet.
+  } else {
+    user.signaturesCount = user.signaturesCount + 1 // Increment the count of approvals.
+  }
+
+  user.save()
+}
 
 // Adjusted to match the YAML configuration
 export function handleExecTransaction(event: ExecutionSuccess): void {

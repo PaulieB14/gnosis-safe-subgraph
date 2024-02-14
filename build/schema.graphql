@@ -1,46 +1,22 @@
-type SafeMultiSigTransaction @entity(immutable: true) {
-  id: Bytes!
-  to: Bytes! # address
-  value: BigInt! # uint256
-  data: Bytes! # bytes
-  operation: Int! # uint8
-  safeTxGas: BigInt! # uint256
-  baseGas: BigInt! # uint256
-  gasPrice: BigInt! # uint256
-  gasToken: Bytes! # address
-  refundReceiver: Bytes! # address
-  signatures: Bytes! # bytes
-  additionalInfo: Bytes! # bytes
-  blockNumber: BigInt!
-  blockTimestamp: BigInt!
-  transactionHash: Bytes!
-}
-
-type SignMsg @entity {
-  id: Bytes!
-  msgHash: Bytes! # bytes32
-  signer: Bytes! # Address of the signer, added to track who signed the message
-  blockNumber: BigInt!
-  blockTimestamp: BigInt!
-  transactionHash: Bytes!
-}
-
-type Signature @entity {
+type User @entity {
   id: ID!
-  transaction: SafeMultiSigTransaction! # Direct link without @derivedFrom
-  signer: Bytes! # Address of the signer
-  signatureData: Bytes! # The actual signature
+  signaturesCount: Int!
+  executionsCount: Int!
+  # Consider adding fields for time-based tracking if needed
 }
 
-type Signer @entity {
-  id: ID! # Address of the signer
+type Transaction @entity {
+  id: ID!
+  executed: Boolean!
+  signers: [User!]! @relation(name: "TransactionSigners")
+  timestamp: BigInt! # Unix timestamp of when the transaction occurred
 }
 
 type UserActivity @entity {
-  id: ID!
+  id: ID! # Could be a composite key or structured to represent user and time frame, e.g., "0xUserAddress-YYYYMM"
   user: Bytes! # Ethereum address of the user
-  month: Int!
-  year: Int!
-  signatures: Int! # Number of signatures this month
-  executions: Int! # Number of executions this month
+  month: Int! # Month of activity
+  year: Int! # Year of activity
+  signaturesCount: Int! # Number of signatures in the time frame
+  executionsCount: Int! # Number of executions in the time frame
 }
