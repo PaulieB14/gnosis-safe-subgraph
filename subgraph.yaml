@@ -27,4 +27,4 @@ dataSources:
           handler: handleExecTransaction
         - event: SafeReceived(address,uint256) # Add this if SafeReceived is an event you want to handle
           handler: handleSafeReceived
-      file: ./src/mapping.ts
+      file: ./src/gnosis-safe-l-2.ts
