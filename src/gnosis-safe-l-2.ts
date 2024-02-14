@@ -1,4 +1,4 @@
-<<<<<<< HEAD
+
 import { ExecutionSuccess } from '../generated/GnosisSafeL2/GnosisSafeL2'
 import { User, Transaction } from '../generated/schema'
 import { ApproveHash } from '../generated/GnosisSafeL2/GnosisSafeL2'
