@@ -21,8 +21,15 @@ dataSources:
         - name: GnosisSafeL2
           file: ./abis/GnosisSafeL2.json
       eventHandlers:
+<<<<<<< HEAD
         - event: ApproveHash(indexed bytes32,indexed address)
           handler: handleApproveHash
         - event: ExecutionSuccess(bytes32,uint256) # Assuming this maps to handleExecTransaction in your TS
           handler: handleExecTransaction
+=======
+        - event: SafeMultiSigTransaction(address,uint256,bytes,uint8,uint256,uint256,uint256,address,address,bytes,bytes)
+          handler: handleSafeMultiSigTransaction
+        - event: SignMsg(indexed bytes32)
+          handler: handleSignMsg
+>>>>>>> 7b6672f8c0140d354178b877dc1966f182b4a29e
       file: ./src/gnosis-safe-l-2.ts
